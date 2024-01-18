@@ -11,6 +11,7 @@ class Socket {
     ~Socket();
 
     void bind(InetAddress*);
+    void connect(InetAddress*);
     void listen();
     int accept(InetAddress*);
     int getFd();

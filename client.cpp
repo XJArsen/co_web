@@ -10,8 +10,8 @@ const short READ_BUFFER = 1024;
 
 int main() {
     Socket *client_socket = new Socket();
-    InetAddress *serv_addr = new InetAddress("127.0.0.1", 8888);
-    client_socket->listen();
+    InetAddress *client_addr = new InetAddress("127.0.0.1", 8888);
+    client_socket->connect(client_addr);
 
     while (true) {
         char buf[READ_BUFFER];
@@ -34,6 +34,7 @@ int main() {
             errif(true, "socker read error");
         }
     }
-
+    delete client_socket;
+    delete client_addr;
     return 0;
 }

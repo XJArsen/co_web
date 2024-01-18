@@ -22,7 +22,10 @@ void Socket::bind(InetAddress* addr) {
     errif(::bind(fd, (sockaddr*)&addr->addr, addr->addr_len) == -1,
           "socket bind error");
 }
-
+void Socket::connect(InetAddress* addr) {
+    errif(::connect(fd, (sockaddr*)&addr->addr, addr->addr_len) == -1,
+          "socket connect error");
+}
 void Socket::listen() {
     errif(::listen(fd, SOMAXCONN) == -1, "socket listen error");
 }
