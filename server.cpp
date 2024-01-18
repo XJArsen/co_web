@@ -75,5 +75,7 @@ int main() {
             }
         }
     }
+    delete serv_socket;
+    delete serv_addr;
     return 0;
 }
