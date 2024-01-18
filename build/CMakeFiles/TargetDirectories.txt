@@ -1,0 +1,6 @@
+/home/xjs1/Desktop/webServer/build/CMakeFiles/edit_cache.dir
+/home/xjs1/Desktop/webServer/build/CMakeFiles/rebuild_cache.dir
+/home/xjs1/Desktop/webServer/build/src/CMakeFiles/server.dir
+/home/xjs1/Desktop/webServer/build/src/CMakeFiles/client.dir
+/home/xjs1/Desktop/webServer/build/src/CMakeFiles/edit_cache.dir
+/home/xjs1/Desktop/webServer/build/src/CMakeFiles/rebuild_cache.dir
