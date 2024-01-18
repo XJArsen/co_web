@@ -1,6 +1,7 @@
 #ifndef EPOLL_H
 #define EPOLL_H
 #include <vector>
+class Channel;
 class Epoll {
    private:
     int epfd;
@@ -9,8 +10,8 @@ class Epoll {
    public:
     Epoll();
     ~Epoll();
-    void addFd(int, uint32_t);
-    std::vector<epoll_event> poll(int timeout = -1);
+    void updateChannel(Channel *);
+    std::vector<Channel *> poll(int timeout = -1);
 };
 
 #endif

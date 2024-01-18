@@ -10,10 +10,32 @@
 #include "Socket.h"
 #include "InetAddress.h"
 #include "Epoll.h"
+#include "Channel.h"
 const short MAX_EVENTS = 1024;
 const short READ_BUFFER = 1024;
-void setnonblocking(int fd) {
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
+
+void handleReadEvent(int sockfd) {
+    char buf[READ_BUFFER];
+    while (true) {
+        bzero(&buf, sizeof buf);
+        ssize_t read_bytes = read(sockfd, buf, sizeof(buf));
+        if (read_bytes > 0) {
+            printf("message from client fd %d: %s\n", sockfd, buf);
+            write(sockfd, buf, sizeof(buf));
+        } else if (read_bytes == 0) {
+            printf("EOF, client fd %d disconnected", sockfd);
+            close(sockfd);
+            break;
+        } else if (read_bytes == -1) {
+            if (errno == EINTR) {
+                printf("continue reading");
+                continue;
+            } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                printf("finish reading once, errno: %d\n", errno);
+                break;
+            }
+        }
+    }
 }
 
 int main() {
@@ -23,17 +45,17 @@ int main() {
     serv_socket->bind(serv_addr);
     serv_socket->listen();
     serv_socket->setnonblocking();
-
     Epoll *ep = new Epoll();
-
-    ep->addFd(serv_socket->getFd(), EPOLLIN | EPOLLET);
+    Channel *servChannel = new Channel(ep, serv_socket->getFd());
+    servChannel->enableReading();
 
     while (true) {
-        std::vector<epoll_event> events = ep->poll();
-        int nfds = events.size();
+        std::vector<Channel *> activeChannels = ep->poll();
+        int nfds = activeChannels.size();
         errif(nfds == -1, "epoll wait error");
         for (int i = 0; i < nfds; i++) {
-            if (events[i].data.fd == serv_socket->getFd()) {
+            int chfd = activeChannels[i]->getFd();
+            if (chfd == serv_socket->getFd()) {
                 InetAddress *client_addr = new InetAddress();
                 Socket *client_sock =
                     new Socket(serv_socket->accept(client_addr));
@@ -43,33 +65,11 @@ int main() {
                        inet_ntoa(client_addr->addr.sin_addr),
                        ntohs(client_addr->addr.sin_port));
 
-                ep->addFd(client_sock->getFd(), EPOLLIN | EPOLLET);
+                Channel *clientChannel = new Channel(ep, client_sock->getFd());
+                clientChannel->enableReading();
                 client_sock->setnonblocking();
-            } else if (events[i].events & EPOLLIN) {
-                while (true) {
-                    char buf[READ_BUFFER];
-                    bzero(&buf, sizeof buf);
-                    ssize_t read_bytes =
-                        read(events[i].data.fd, buf, sizeof(buf));
-                    if (read_bytes > 0) {
-                        printf("message from client fd %d: %s\n",
-                               events[i].data.fd, buf);
-                        write(events[i].data.fd, buf, sizeof(buf));
-                    } else if (read_bytes == 0) {
-                        printf("EOF, client fd %d disconnected",
-                               events[i].data.fd);
-                        close(events[i].data.fd);
-                        break;
-                    } else if (read_bytes == -1) {
-                        if (errno == EINTR) {
-                            printf("continue reading");
-                            continue;
-                        } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                            printf("finish reading once, errno: %d\n", errno);
-                            break;
-                        }
-                    }
-                }
+            } else if (activeChannels[i]->getRevents() & EPOLLIN) {
+                handleReadEvent(chfd);
             } else {
                 printf("----");
             }
