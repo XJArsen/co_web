@@ -6,9 +6,11 @@
 #define INCLUDE_SERVER_H_
 class Socket;
 class EventLoop;
+class Acceptor;
 class Server {
    private:
     EventLoop *loop;
+    Acceptor *acceptor;
 
    public:
     Server(EventLoop *);

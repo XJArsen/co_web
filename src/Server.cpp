@@ -11,25 +11,19 @@
 #include "Channel.h"
 #include "Server.h"
 #include "EventLoop.h"
+#include "Acceptor.h"
 const short MAX_EVENTS = 1024;
 const short READ_BUFFER = 1024;
 
-Server::Server(EventLoop *_loop) : loop(_loop) {
-    Socket *serv_socket = new Socket();
-    InetAddress *serv_addr = new InetAddress("127.0.0.1", 8888);
-    serv_socket->bind(serv_addr);
-    serv_socket->listen();
-    Channel *servChannel = new Channel(loop, serv_socket->getFd());
-    std::function<void()> cb =
-        std::bind(&Server::newConnection, this, serv_socket);
-
-    serv_socket->setnonblocking();
-    servChannel->setCallback(cb);
-    servChannel->enableReading();
+Server::Server(EventLoop *_loop) : loop(_loop), acceptor(nullptr) {
+    acceptor = new Acceptor(loop);
+    std::function<void(Socket *)> cb =
+        std::bind(&Server::newConnection, this, std::placeholders::_1);
+    acceptor->setNewConnectionCallback(cb);
 }
 
 Server::~Server() {
-    delete loop;
+    delete acceptor;
 }
 
 void Server::handleReadEvent(int sockfd) {
