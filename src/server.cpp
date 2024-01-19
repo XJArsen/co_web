@@ -1,81 +1,11 @@
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <cstring>
-#include <cstdio>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/epoll.h>
-#include <errno.h>
-#include "util.h"
-#include "Socket.h"
-#include "InetAddress.h"
-#include "Epoll.h"
-#include "Channel.h"
+#include "Server.h"
+#include "EventLoop.h"
 const short MAX_EVENTS = 1024;
 const short READ_BUFFER = 1024;
 
-void handleReadEvent(int sockfd) {
-    char buf[READ_BUFFER];
-    while (true) {
-        bzero(&buf, sizeof buf);
-        ssize_t read_bytes = read(sockfd, buf, sizeof(buf));
-        if (read_bytes > 0) {
-            printf("message from client fd %d: %s\n", sockfd, buf);
-            write(sockfd, buf, sizeof(buf));
-        } else if (read_bytes == 0) {
-            printf("EOF, client fd %d disconnected", sockfd);
-            close(sockfd);
-            break;
-        } else if (read_bytes == -1) {
-            if (errno == EINTR) {
-                printf("continue reading");
-                continue;
-            } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                printf("finish reading once, errno: %d\n", errno);
-                break;
-            }
-        }
-    }
-}
-
 int main() {
-    Socket *serv_socket = new Socket();
-
-    InetAddress *serv_addr = new InetAddress("127.0.0.1", 8888);
-    serv_socket->bind(serv_addr);
-    serv_socket->listen();
-    serv_socket->setnonblocking();
-    Epoll *ep = new Epoll();
-    Channel *servChannel = new Channel(ep, serv_socket->getFd());
-    servChannel->enableReading();
-
-    while (true) {
-        std::vector<Channel *> activeChannels = ep->poll();
-        int nfds = activeChannels.size();
-        errif(nfds == -1, "epoll wait error");
-        for (int i = 0; i < nfds; i++) {
-            int chfd = activeChannels[i]->getFd();
-            if (chfd == serv_socket->getFd()) {
-                InetAddress *client_addr = new InetAddress();
-                Socket *client_sock =
-                    new Socket(serv_socket->accept(client_addr));
-
-                printf("new client fd %d! IP : %s Port: %d\n",
-                       client_sock->getFd(),
-                       inet_ntoa(client_addr->addr.sin_addr),
-                       ntohs(client_addr->addr.sin_port));
-
-                Channel *clientChannel = new Channel(ep, client_sock->getFd());
-                clientChannel->enableReading();
-                client_sock->setnonblocking();
-            } else if (activeChannels[i]->getRevents() & EPOLLIN) {
-                handleReadEvent(chfd);
-            } else {
-                printf("----");
-            }
-        }
-    }
-    delete serv_socket;
-    delete serv_addr;
+    EventLoop *loop = new EventLoop();
+    Server *server = new Server(loop);
+    loop->loop();
     return 0;
 }

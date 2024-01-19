@@ -31,6 +31,16 @@
 },
 {
   "directory": "/home/xjs1/Desktop/webServer/build/src",
+  "command": "/usr/bin/g++  -I/home/xjs1/Desktop/webServer/src/../include -g -o CMakeFiles/server.dir/EventLoop.cpp.o -c /home/xjs1/Desktop/webServer/src/EventLoop.cpp",
+  "file": "/home/xjs1/Desktop/webServer/src/EventLoop.cpp"
+},
+{
+  "directory": "/home/xjs1/Desktop/webServer/build/src",
+  "command": "/usr/bin/g++  -I/home/xjs1/Desktop/webServer/src/../include -g -o CMakeFiles/server.dir/Server.cpp.o -c /home/xjs1/Desktop/webServer/src/Server.cpp",
+  "file": "/home/xjs1/Desktop/webServer/src/Server.cpp"
+},
+{
+  "directory": "/home/xjs1/Desktop/webServer/build/src",
   "command": "/usr/bin/g++  -I/home/xjs1/Desktop/webServer/src/../include -g -o CMakeFiles/client.dir/client.cpp.o -c /home/xjs1/Desktop/webServer/src/client.cpp",
   "file": "/home/xjs1/Desktop/webServer/src/client.cpp"
 },

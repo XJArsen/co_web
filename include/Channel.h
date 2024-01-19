@@ -5,21 +5,24 @@
 #ifndef INCLUDE_CHANNEL_H_
 #define INCLUDE_CHANNEL_H_
 #include <sys/epoll.h>
-
-class Epoll;
+#include <functional>
+class EventLoop;
 class Channel {
    private:
-    Epoll* ep;
+    EventLoop* loop;
     int fd;
     uint32_t events, revents;
     bool inEpoll;
+    std::function<void()> callback;
 
    public:
     Channel();
-    Channel(Epoll* _ev, int fd);
+    Channel(EventLoop*, int);
     ~Channel();
 
     void enableReading();
+    void handleEvent();
+    void setCallback(std::function<void()>);
 
     void setInEpoll();
     void setEvents(uint32_t);

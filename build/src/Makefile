@@ -192,6 +192,30 @@ Epoll.cpp.s:
 	cd /home/xjs1/Desktop/webServer/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/server.dir/build.make src/CMakeFiles/server.dir/Epoll.cpp.s
 .PHONY : Epoll.cpp.s
 
+EventLoop.o: EventLoop.cpp.o
+.PHONY : EventLoop.o
+
+# target to build an object file
+EventLoop.cpp.o:
+	cd /home/xjs1/Desktop/webServer/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/server.dir/build.make src/CMakeFiles/server.dir/EventLoop.cpp.o
+.PHONY : EventLoop.cpp.o
+
+EventLoop.i: EventLoop.cpp.i
+.PHONY : EventLoop.i
+
+# target to preprocess a source file
+EventLoop.cpp.i:
+	cd /home/xjs1/Desktop/webServer/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/server.dir/build.make src/CMakeFiles/server.dir/EventLoop.cpp.i
+.PHONY : EventLoop.cpp.i
+
+EventLoop.s: EventLoop.cpp.s
+.PHONY : EventLoop.s
+
+# target to generate assembly for a file
+EventLoop.cpp.s:
+	cd /home/xjs1/Desktop/webServer/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/server.dir/build.make src/CMakeFiles/server.dir/EventLoop.cpp.s
+.PHONY : EventLoop.cpp.s
+
 InetAddress.o: InetAddress.cpp.o
 .PHONY : InetAddress.o
 
@@ -218,6 +242,30 @@ InetAddress.cpp.s:
 	cd /home/xjs1/Desktop/webServer/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/server.dir/build.make src/CMakeFiles/server.dir/InetAddress.cpp.s
 	cd /home/xjs1/Desktop/webServer/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/client.dir/build.make src/CMakeFiles/client.dir/InetAddress.cpp.s
 .PHONY : InetAddress.cpp.s
+
+Server.o: Server.cpp.o
+.PHONY : Server.o
+
+# target to build an object file
+Server.cpp.o:
+	cd /home/xjs1/Desktop/webServer/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/server.dir/build.make src/CMakeFiles/server.dir/Server.cpp.o
+.PHONY : Server.cpp.o
+
+Server.i: Server.cpp.i
+.PHONY : Server.i
+
+# target to preprocess a source file
+Server.cpp.i:
+	cd /home/xjs1/Desktop/webServer/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/server.dir/build.make src/CMakeFiles/server.dir/Server.cpp.i
+.PHONY : Server.cpp.i
+
+Server.s: Server.cpp.s
+.PHONY : Server.s
+
+# target to generate assembly for a file
+Server.cpp.s:
+	cd /home/xjs1/Desktop/webServer/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/server.dir/build.make src/CMakeFiles/server.dir/Server.cpp.s
+.PHONY : Server.cpp.s
 
 Socket.o: Socket.cpp.o
 .PHONY : Socket.o
@@ -337,9 +385,15 @@ help:
 	@echo "... Epoll.o"
 	@echo "... Epoll.i"
 	@echo "... Epoll.s"
+	@echo "... EventLoop.o"
+	@echo "... EventLoop.i"
+	@echo "... EventLoop.s"
 	@echo "... InetAddress.o"
 	@echo "... InetAddress.i"
 	@echo "... InetAddress.s"
+	@echo "... Server.o"
+	@echo "... Server.i"
+	@echo "... Server.s"
 	@echo "... Socket.o"
 	@echo "... Socket.i"
 	@echo "... Socket.s"
