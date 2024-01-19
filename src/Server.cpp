@@ -29,6 +29,7 @@ Server::Server(EventLoop *_loop) : loop(_loop) {
 }
 
 Server::~Server() {
+    delete loop;
 }
 
 void Server::handleReadEvent(int sockfd) {
