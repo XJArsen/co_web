@@ -73,57 +73,57 @@ src/CMakeFiles/client.dir/client.cpp.o: src/CMakeFiles/client.dir/flags.make
 src/CMakeFiles/client.dir/client.cpp.o: ../src/client.cpp
 src/CMakeFiles/client.dir/client.cpp.o: src/CMakeFiles/client.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xjs1/Desktop/webServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/client.dir/client.cpp.o"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/client.dir/client.cpp.o -MF CMakeFiles/client.dir/client.cpp.o.d -o CMakeFiles/client.dir/client.cpp.o -c /home/xjs1/Desktop/webServer/src/client.cpp
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/client.dir/client.cpp.o -MF CMakeFiles/client.dir/client.cpp.o.d -o CMakeFiles/client.dir/client.cpp.o -c /home/xjs1/Desktop/webServer/src/client.cpp
 
 src/CMakeFiles/client.dir/client.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/client.dir/client.cpp.i"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xjs1/Desktop/webServer/src/client.cpp > CMakeFiles/client.dir/client.cpp.i
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xjs1/Desktop/webServer/src/client.cpp > CMakeFiles/client.dir/client.cpp.i
 
 src/CMakeFiles/client.dir/client.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/client.dir/client.cpp.s"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xjs1/Desktop/webServer/src/client.cpp -o CMakeFiles/client.dir/client.cpp.s
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xjs1/Desktop/webServer/src/client.cpp -o CMakeFiles/client.dir/client.cpp.s
 
 src/CMakeFiles/client.dir/Socket.cpp.o: src/CMakeFiles/client.dir/flags.make
 src/CMakeFiles/client.dir/Socket.cpp.o: ../src/Socket.cpp
 src/CMakeFiles/client.dir/Socket.cpp.o: src/CMakeFiles/client.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xjs1/Desktop/webServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/CMakeFiles/client.dir/Socket.cpp.o"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/client.dir/Socket.cpp.o -MF CMakeFiles/client.dir/Socket.cpp.o.d -o CMakeFiles/client.dir/Socket.cpp.o -c /home/xjs1/Desktop/webServer/src/Socket.cpp
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/client.dir/Socket.cpp.o -MF CMakeFiles/client.dir/Socket.cpp.o.d -o CMakeFiles/client.dir/Socket.cpp.o -c /home/xjs1/Desktop/webServer/src/Socket.cpp
 
 src/CMakeFiles/client.dir/Socket.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/client.dir/Socket.cpp.i"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xjs1/Desktop/webServer/src/Socket.cpp > CMakeFiles/client.dir/Socket.cpp.i
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xjs1/Desktop/webServer/src/Socket.cpp > CMakeFiles/client.dir/Socket.cpp.i
 
 src/CMakeFiles/client.dir/Socket.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/client.dir/Socket.cpp.s"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xjs1/Desktop/webServer/src/Socket.cpp -o CMakeFiles/client.dir/Socket.cpp.s
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xjs1/Desktop/webServer/src/Socket.cpp -o CMakeFiles/client.dir/Socket.cpp.s
 
 src/CMakeFiles/client.dir/InetAddress.cpp.o: src/CMakeFiles/client.dir/flags.make
 src/CMakeFiles/client.dir/InetAddress.cpp.o: ../src/InetAddress.cpp
 src/CMakeFiles/client.dir/InetAddress.cpp.o: src/CMakeFiles/client.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xjs1/Desktop/webServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/CMakeFiles/client.dir/InetAddress.cpp.o"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/client.dir/InetAddress.cpp.o -MF CMakeFiles/client.dir/InetAddress.cpp.o.d -o CMakeFiles/client.dir/InetAddress.cpp.o -c /home/xjs1/Desktop/webServer/src/InetAddress.cpp
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/client.dir/InetAddress.cpp.o -MF CMakeFiles/client.dir/InetAddress.cpp.o.d -o CMakeFiles/client.dir/InetAddress.cpp.o -c /home/xjs1/Desktop/webServer/src/InetAddress.cpp
 
 src/CMakeFiles/client.dir/InetAddress.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/client.dir/InetAddress.cpp.i"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xjs1/Desktop/webServer/src/InetAddress.cpp > CMakeFiles/client.dir/InetAddress.cpp.i
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xjs1/Desktop/webServer/src/InetAddress.cpp > CMakeFiles/client.dir/InetAddress.cpp.i
 
 src/CMakeFiles/client.dir/InetAddress.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/client.dir/InetAddress.cpp.s"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xjs1/Desktop/webServer/src/InetAddress.cpp -o CMakeFiles/client.dir/InetAddress.cpp.s
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xjs1/Desktop/webServer/src/InetAddress.cpp -o CMakeFiles/client.dir/InetAddress.cpp.s
 
 src/CMakeFiles/client.dir/util.cpp.o: src/CMakeFiles/client.dir/flags.make
 src/CMakeFiles/client.dir/util.cpp.o: ../src/util.cpp
 src/CMakeFiles/client.dir/util.cpp.o: src/CMakeFiles/client.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xjs1/Desktop/webServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/CMakeFiles/client.dir/util.cpp.o"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/client.dir/util.cpp.o -MF CMakeFiles/client.dir/util.cpp.o.d -o CMakeFiles/client.dir/util.cpp.o -c /home/xjs1/Desktop/webServer/src/util.cpp
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/client.dir/util.cpp.o -MF CMakeFiles/client.dir/util.cpp.o.d -o CMakeFiles/client.dir/util.cpp.o -c /home/xjs1/Desktop/webServer/src/util.cpp
 
 src/CMakeFiles/client.dir/util.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/client.dir/util.cpp.i"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xjs1/Desktop/webServer/src/util.cpp > CMakeFiles/client.dir/util.cpp.i
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xjs1/Desktop/webServer/src/util.cpp > CMakeFiles/client.dir/util.cpp.i
 
 src/CMakeFiles/client.dir/util.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/client.dir/util.cpp.s"
-	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xjs1/Desktop/webServer/src/util.cpp -o CMakeFiles/client.dir/util.cpp.s
+	cd /home/xjs1/Desktop/webServer/build/src && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xjs1/Desktop/webServer/src/util.cpp -o CMakeFiles/client.dir/util.cpp.s
 
 # Object files for target client
 client_OBJECTS = \

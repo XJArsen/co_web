@@ -1,5 +1,9 @@
-#ifndef CHANNEL_H
-#define CHANNEL_H
+// Copyright (c) RealCoolEngineer. 2024. All rights reserved.
+// Author: XJArsen
+// Date: 2024-01-19
+
+#ifndef INCLUDE_CHANNEL_H_
+#define INCLUDE_CHANNEL_H_
 #include <sys/epoll.h>
 
 class Epoll;
@@ -26,5 +30,4 @@ class Channel {
     uint32_t getEvents();
     uint32_t getRevents();
 };
-
 #endif
