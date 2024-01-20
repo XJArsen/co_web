@@ -2,7 +2,7 @@
 #include "Epoll.h"
 #include "Channel.h"
 
-EventLoop::EventLoop() {
+EventLoop::EventLoop() : ep(nullptr), quit(false) {
     ep = new Epoll();
 }
 EventLoop::~EventLoop() {
