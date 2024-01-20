@@ -2,8 +2,6 @@
 #include "Server.h"
 #include "Acceptor.h"
 #include "Connection.h"
-const short MAX_EVENTS = 1024;
-const short READ_BUFFER = 1024;
 
 Server::Server(EventLoop *_loop) : loop(_loop), acceptor(nullptr) {
     acceptor = new Acceptor(loop);
