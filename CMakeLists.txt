@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.22.1)
-
 project(webServer)
-add_subdirectory(./src)
+include_directories(./include)
+add_subdirectory(src)
+add_subdirectory(test)
