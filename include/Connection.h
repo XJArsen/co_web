@@ -9,16 +9,19 @@
 #include "Socket.h"
 #include "InetAddress.h"
 #include "Channel.h"
+#include "Buffer.h"
 class EventLoop;
 class Socket;
 class Channel;
 class InetAddress;
-
+class Buffer;
 class Connection {
    private:
     EventLoop *loop;
     Socket *sock;
     Channel *connectionChannel;
+    Buffer *send_buffer{nullptr};
+    Buffer *read_buffer{nullptr};
     std::function<void(Socket *)> deleteConnectionCallback;
 
    public:

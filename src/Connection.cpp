@@ -6,15 +6,18 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <errno.h>
+#include "Buffer.h"
+#include "util.h"
 const short READ_BUFFER = 1024;
 Connection::Connection(EventLoop *_loop, Socket *_sock)
-    : loop(_loop), sock(_sock), connectionChannel(nullptr) {
+    : loop(_loop), sock(_sock) {
     connectionChannel = new Channel(loop, sock->getFd());
     std::function<void()> cb =
         std::bind(&Connection::echo, this, sock->getFd());
     sock->setnonblocking();
     connectionChannel->setCallback(cb);
     connectionChannel->enableReading();
+    read_buffer = new Buffer();
 }
 
 Connection::~Connection() {
@@ -27,8 +30,7 @@ void Connection::echo(int sockfd) {
         bzero(&buf, sizeof buf);
         ssize_t read_bytes = read(sockfd, buf, sizeof(buf));
         if (read_bytes > 0) {
-            printf("message from client fd %d: %s\n", sockfd, buf);
-            write(sockfd, buf, sizeof(buf));
+            read_buffer->append(buf, read_bytes);
         } else if (read_bytes == 0) {
             printf("EOF, client fd %d disconnected", sockfd);
             deleteConnectionCallback(sock);
@@ -39,6 +41,14 @@ void Connection::echo(int sockfd) {
                 continue;
             } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
                 printf("finish reading once, errno: %d\n", errno);
+                printf("message from client fd %d: %s\n", sockfd,
+                       read_buffer->c_str());
+                errif(write(sockfd, read_buffer->c_str(),
+                            read_buffer->size()) == -1,
+                      "socket write error");
+
+                read_buffer->clear();
+
                 break;
             }
         }
