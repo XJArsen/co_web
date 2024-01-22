@@ -5,23 +5,23 @@
 #ifndef INCLUDE_ACCPETOR_H_
 #define INCLUDE_ACCPETOR_H_
 #include <functional>
-#include "EventLoop.h"
-#include "Socket.h"
-#include "InetAddress.h"
 #include "Channel.h"
+#include "EventLoop.h"
+#include "InetAddress.h"
+#include "Socket.h"
 class EventLoop;
 class Socket;
 class Channel;
 class InetAddress;
 class Acceptor {
-   private:
+  private:
     EventLoop *loop;
     Socket *sock;
     Channel *acceptChannel;
     InetAddress *addr;
     std::function<void(Socket *)> newConnectionCallback;
 
-   public:
+  public:
     Acceptor(EventLoop *);
     ~Acceptor();
     void acceptConnection();
