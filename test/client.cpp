@@ -1,40 +1,49 @@
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <cstring>
-#include <cstdio>
 #include <unistd.h>
-#include "util.h"
+#include <cstdio>
+#include <cstring>
+#include "Buffer.h"
 #include "InetAddress.h"
 #include "Socket.h"
+#include "util.h"
 const short READ_BUFFER = 1024;
 
 int main() {
-    Socket *client_socket = new Socket();
-    InetAddress *client_addr = new InetAddress("127.0.0.1", 8888);
-    client_socket->connect(client_addr);
+    Socket *sock = new Socket();
+    InetAddress *addr = new InetAddress("127.0.0.1", 8888);
+    sock->connect(addr);
+
+    int sockfd = sock->getFd();
+
+    Buffer *sendBuffer = new Buffer();
+    Buffer *readBuffer = new Buffer();
 
     while (true) {
         char buf[READ_BUFFER];
-        bzero(&buf, sizeof buf);
-        scanf("%s", buf);
-        ssize_t write_bytes = write(client_socket->getFd(), buf, sizeof(buf));
+        sendBuffer->getline();
+        ssize_t write_bytes = write(sockfd, sendBuffer->c_str(), sendBuffer->size());
         if (write_bytes == -1) {
             printf("socket already disconnected, can't write any more!\n");
             break;
         }
-        bzero(&buf, sizeof buf);
-        ssize_t read_bytes = read(client_socket->getFd(), buf, sizeof(buf));
-        if (read_bytes > 0) {
-            printf("message from server: %s\n", buf);
-        } else if (read_bytes == 0) {
-            printf("server socker disconnected");
-            break;
-        } else if (read_bytes == -1) {
-            close(client_socket->getFd());
-            errif(true, "socker read error");
+        int already_read = 0;
+        while (true) {
+            bzero(&buf, sizeof buf);
+            ssize_t read_bytes = read(sock->getFd(), buf, sizeof(buf));
+            if (read_bytes > 0) {
+                readBuffer->append(buf, read_bytes);
+                already_read += read_bytes;
+            } else if (read_bytes == 0) {
+                printf("server disconnected!\n");
+                exit(EXIT_SUCCESS);
+            }
+            if (already_read >= sendBuffer->size()) {
+                printf("message from server: %s\n", readBuffer->c_str());
+                break;
+            }
         }
+        readBuffer->clear();
     }
-    delete client_socket;
-    delete client_addr;
+    delete sock;
+    delete addr;
     return 0;
 }

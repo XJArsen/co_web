@@ -1,10 +1,10 @@
-#include <sys/socket.h>
+#include "Socket.h"
 #include <fcntl.h>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <cstring>
-#include "Socket.h"
-#include "util.h"
 #include "InetAddress.h"
+#include "util.h"
 
 Socket::Socket() : fd(-1) {
     fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -27,8 +27,7 @@ void Socket::bind(InetAddress* _addr) {
 void Socket::connect(InetAddress* _addr) {
     struct sockaddr_in addr = _addr->getAddr();
     socklen_t addr_len = _addr->getAddr_len();
-    errif(::connect(fd, (sockaddr*)&addr, addr_len) == -1,
-          "socket connect error");
+    errif(::connect(fd, (sockaddr*)&addr, addr_len) == -1, "socket connect error");
 }
 void Socket::listen() {
     errif(::listen(fd, SOMAXCONN) == -1, "socket listen error");

@@ -7,14 +7,15 @@
 #include <vector>
 class Channel;
 class Epoll {
-   private:
+  private:
     int epfd;
     struct epoll_event *events;
 
-   public:
+  public:
     Epoll();
     ~Epoll();
     void updateChannel(Channel *);
+    void deleteChannel(Channel *);
     std::vector<Channel *> poll(int timeout = -1);
 };
 #endif

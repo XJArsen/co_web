@@ -8,29 +8,32 @@
 #include <functional>
 class EventLoop;
 class Channel {
-   private:
+  private:
     EventLoop* loop;
     int fd;
-    uint32_t events, revents;
-    bool inEpoll;
-    std::function<void()> callback;
+    uint32_t events, ready;
+    bool inEpoll, useThreadPool;
+    std::function<void()> readCallback, writedCallback;
 
-   public:
+  public:
     Channel();
     Channel(EventLoop*, int);
     ~Channel();
 
     void enableReading();
     void handleEvent();
-    void setCallback(std::function<void()>);
+    void useET();
 
-    void setInEpoll();
+    void setInEpoll(bool);
+    void setUseThreadPool(bool);
     void setEvents(uint32_t);
-    void setRevents(uint32_t);
+    void setReady(uint32_t);
+    void setReadCallback(std::function<void()>);
+    void setWritedCallback(std::function<void()>);
 
     int getFd();
     bool getInEpoll();
     uint32_t getEvents();
-    uint32_t getRevents();
+    uint32_t getReady();
 };
 #endif

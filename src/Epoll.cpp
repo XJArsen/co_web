@@ -1,9 +1,10 @@
-#include <sys/epoll.h>
-#include <cstring>
-#include <unistd.h>
 #include "Epoll.h"
-#include "util.h"
+#include <sys/epoll.h>
+#include <unistd.h>
+#include <cstring>
+#include <iostream>
 #include "Channel.h"
+#include "util.h"
 const int MAX_EVENTS = 1024;
 
 Epoll::Epoll() : epfd(-1), events(nullptr) {
@@ -26,7 +27,7 @@ std::vector<Channel*> Epoll::poll(int timeout) {
     errif(nfds == -1, "epoll wait error");
     for (int i = 0; i < nfds; i++) {
         Channel* channel = (Channel*)events[i].data.ptr;
-        channel->setRevents(events[i].events);
+        channel->setReady(events[i].events);
         activeChannels.push_back(channel);
     }
     return activeChannels;
@@ -39,11 +40,14 @@ void Epoll::updateChannel(Channel* channel) {
     ev.data.ptr = channel;
     ev.events = channel->getEvents();
     if (!channel->getInEpoll()) {
-        errif(epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1,
-              "epoll add event error");
-        channel->setInEpoll();
+        errif(epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1, "epoll add event error");
+        channel->setInEpoll(true);
     } else {
-        errif(epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &ev) == -1,
-              "epoll modify event error");
+        errif(epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &ev) == -1, "epoll modify event error");
     }
+}
+void Epoll::deleteChannel(Channel* channel) {
+    int fd = channel->getFd();
+    errif(epoll_ctl(epfd, EPOLL_CTL_DEL, fd, NULL) == -1, "epoll delete error");
+    channel->setInEpoll(false);
 }

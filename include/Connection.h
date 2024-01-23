@@ -5,30 +5,31 @@
 #ifndef INCLUDE_CONNECTION_H_
 #define INCLUDE_CONNECTION_H_
 #include <functional>
-#include "EventLoop.h"
-#include "Socket.h"
-#include "InetAddress.h"
-#include "Channel.h"
 #include "Buffer.h"
+#include "Channel.h"
+#include "EventLoop.h"
+#include "InetAddress.h"
+#include "Socket.h"
 class EventLoop;
 class Socket;
 class Channel;
 class InetAddress;
 class Buffer;
 class Connection {
-   private:
+  private:
     EventLoop *loop;
     Socket *sock;
     Channel *connectionChannel;
     Buffer *send_buffer{nullptr};
     Buffer *read_buffer{nullptr};
-    std::function<void(Socket *)> deleteConnectionCallback;
+    std::function<void(int)> deleteConnectionCallback;
 
-   public:
+  public:
     Connection(EventLoop *, Socket *);
     ~Connection();
     void echo(int);
-    void setDeleteConnectionCallback(std::function<void(Socket *)>);
+    void send(int);
+    void setDeleteConnectionCallback(std::function<void(int)>);
 };
 
 #endif

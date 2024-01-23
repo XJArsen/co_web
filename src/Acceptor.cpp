@@ -8,8 +8,9 @@ Acceptor::Acceptor(EventLoop *_loop) : loop(_loop), acceptChannel(nullptr) {
     acceptChannel = new Channel(loop, sock->getFd());
     std::function<void()> cb = std::bind(&Acceptor::acceptConnection, this);
     sock->setnonblocking();
-    acceptChannel->setCallback(cb);
+    acceptChannel->setReadCallback(cb);
     acceptChannel->enableReading();
+    acceptChannel->setUseThreadPool(false);
     delete addr;
 }
 
@@ -21,8 +22,7 @@ void Acceptor::acceptConnection() {
     InetAddress *client_addr = new InetAddress();
     Socket *clnt_sock = new Socket(sock->accept(client_addr));
     printf("new client fd %d! IP: %s Port: %d\n", clnt_sock->getFd(),
-           inet_ntoa(client_addr->getAddr().sin_addr),
-           ntohs(client_addr->getAddr().sin_port));
+           inet_ntoa(client_addr->getAddr().sin_addr), ntohs(client_addr->getAddr().sin_port));
 
     clnt_sock->setnonblocking();
     newConnectionCallback(clnt_sock);

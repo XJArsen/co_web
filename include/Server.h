@@ -10,17 +10,17 @@ class EventLoop;
 class Acceptor;
 class Connection;
 class Server {
-   private:
+  private:
     EventLoop *loop;
     Acceptor *acceptor;
     std::map<int, Connection *> connections;
 
-   public:
+  public:
     Server(EventLoop *);
     ~Server();
 
     void newConnection(Socket *);
-    void deleteConnection(Socket *);
+    void deleteConnection(int);
 };
 
 #endif

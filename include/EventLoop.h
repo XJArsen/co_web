@@ -11,9 +11,9 @@ class Epoll;
 class ThreadPool;
 class EventLoop {
   private:
-    Epoll *ep;
-    ThreadPool *threadPool;
-    bool quit;
+    Epoll *ep = nullptr;
+    ThreadPool *threadPool = nullptr;
+    bool quit = false;
 
   public:
     EventLoop();

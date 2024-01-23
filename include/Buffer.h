@@ -6,10 +6,10 @@
 #define INCLUDE_BUFFER_H_
 #include <string>
 class Buffer {
-   private:
+  private:
     std::string buf;
 
-   public:
+  public:
     Buffer() = default;
     ~Buffer() = default;
     void append(const char*, int);
@@ -17,6 +17,7 @@ class Buffer {
     const char* c_str();
     void clear();
     void getline();
+    void setBuf(const char*);
 };
 
 #endif
