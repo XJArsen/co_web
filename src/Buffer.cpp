@@ -30,11 +30,17 @@ void Buffer::Retrieve(size_t len) {
     readPos += len;
 }
 void Buffer::RetrieveUntil(const char* end) {
+    // assert(Peek() <= end);
+    Retrieve(end - Peek());
 }
 
 void Buffer::RetrieveAll() {
+    bzero(&buf, buf.size());
+    readPos = writePos = 0;
 }
 std::string Buffer::RetrieveAllToStr() {
+    bzero(&buf[0], buf.size());
+    readPos = writePos = 0;
 }
 
 const char* Buffer::BeginWriteConst() const {

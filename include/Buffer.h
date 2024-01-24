@@ -7,7 +7,7 @@
 #include <sys/uio.h>
 #include <unistd.h>
 #include <atomic>
-#include <string>
+#include <cstring>
 #include <vector>
 #include "util.h"
 class Buffer {
