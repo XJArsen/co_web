@@ -34,7 +34,7 @@ void Connection::echo(int sockfd) {
         bzero(&buf, sizeof buf);
         ssize_t read_bytes = read(sockfd, buf, sizeof(buf));
         if (read_bytes > 0) {
-            read_buffer->append(buf, read_bytes);
+            read_buffer->Append(buf, read_bytes);
         } else if (read_bytes == 0) {
             printf("EOF, client fd %d disconnected\n", sockfd);
             deleteConnectionCallback(sock->getFd());
