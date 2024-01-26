@@ -4,6 +4,9 @@
 
 #ifndef INCLUDE_LOG_H_
 #define INCLUDE_LOG_H_
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <cstdarg>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -11,23 +14,23 @@
 #include "Blockqueue.h"
 #include "Buffer.h"
 class Log {
-    void init(int level, const char* path = "./log", const char* suffix = ".log",
+    void init(int _level, const char* _path = "./log", const char* _suffix = ".log",
               int maxQueueCapacity = 1024);
 
     static Log* Instance();
     static void FlushLogThread();  // 异步写日志公有方法，调用私有方法asyncWrite
 
-    void write(int level, const char* format, ...);  // 将输出内容按照标准格式整理
+    void write(int, const char*, ...);  // 将输出内容按照标准格式整理
     void flush();
 
     int GetLevel();
-    void SetLevel(int level);
+    void SetLevel(int);
     bool IsOpen();
 
   private:
     Log();
     virtual ~Log();
-    void AppendLogLevelTitle(int level);
+    void AppendLogLevelTitle(int);
     void AsyncWrite();  // 异步写日志方法
 
     static const int LOG_PATH_LEN = 256;  // 日志文件最长文件名
@@ -44,7 +47,7 @@ class Log {
 
     bool isOpen;
 
-    Buffer buff;   // 输出的内容，缓冲区
+    Buffer buf;    // 输出的内容，缓冲区
     int level;     // 日志等级
     bool isAsync;  // 是否开启异步日志
 
