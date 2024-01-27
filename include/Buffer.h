@@ -8,13 +8,14 @@
 #include <unistd.h>
 #include <atomic>
 #include <cstring>
+#include <string>
 #include <vector>
 #include "util.h"
 class Buffer {
   private:
-    char* BeginPtr_();  // buffer开头
-    const char* BeginPtr_() const;
-    void MakeSpace_(size_t len);
+    char* BeginPtr();  // buffer开头
+    const char* BeginPtr() const;
+    void MakeSpace(size_t len);
 
     std::vector<char> buf;
     std::atomic<std::size_t> readPos;   // 读的下标

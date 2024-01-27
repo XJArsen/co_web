@@ -14,6 +14,7 @@
 #include "Blockqueue.h"
 #include "Buffer.h"
 class Log {
+  public:
     void init(int _level, const char* _path = "./log", const char* _suffix = ".log",
               int maxQueueCapacity = 1024);
 
@@ -39,8 +40,6 @@ class Log {
 
     const char* path;    //路径名
     const char* suffix;  //后缀名
-
-    int MAX_LINES;  // 最大日志行数
 
     int lineCount;  //日志行数记录
     int toDay;      //按当天日期区分文件

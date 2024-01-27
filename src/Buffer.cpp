@@ -19,7 +19,7 @@ const char* Buffer::Peek() const {
 }
 void Buffer::EnsureWriteable(size_t len) {
     if (len > WritableBytes()) {
-        MakeSpace_(len);
+        MakeSpace(len);
     }
 }
 void Buffer::HasWritten(size_t len) {
@@ -90,18 +90,18 @@ ssize_t Buffer::WriteFd(int fd) {
     Retrieve(len);
     return len;
 }
-char* Buffer::BeginPtr_() {
+char* Buffer::BeginPtr() {
     return &buf[0];
 }
-const char* Buffer::BeginPtr_() const {
+const char* Buffer::BeginPtr() const {
     return &buf[0];
 }
-void Buffer::MakeSpace_(size_t len) {
+void Buffer::MakeSpace(size_t len) {
     if (WritableBytes() + PrependableBytes() < len) {
         buf.resize(writePos + len + 1);
     } else {
         size_t readable = ReadableBytes();
-        std::copy(BeginPtr_() + readPos, BeginPtr_() + writePos, BeginPtr_());
+        std::copy(BeginPtr() + readPos, BeginPtr() + writePos, BeginPtr());
         readPos = 0;
         writePos = readable;
         errif(readable == ReadableBytes(), "MakeSpace error!\n");

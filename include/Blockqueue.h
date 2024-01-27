@@ -52,7 +52,7 @@ BlockQueue<T>::~BlockQueue() {
 template <typename T>
 bool BlockQueue<T>::empty() {
     lock_guard<mutex> locker(mtx);
-    deq.empty();
+    return deq.empty();
 }
 
 template <typename T>
@@ -88,7 +88,7 @@ bool BlockQueue<T>::pop(T& item) {
 template <typename T>
 bool BlockQueue<T>::pop(T& item, int timeout) {
     unique_lock<std::mutex> locker(mtx);
-    while (deq_.empty()) {
+    while (deq.empty()) {
         if (condConsumer.wait_for(locker, std::chrono::seconds(timeout)) ==
             std::cv_status::timeout) {
             return false;

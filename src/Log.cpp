@@ -26,8 +26,7 @@ Log* Log::Instance() {
     return &log;
 }
 
-void Log::init(int _level, const char* _path = "./log", const char* _suffix = ".log",
-               int maxQueueCapacity = 1024) {
+void Log::init(int _level, const char* _path, const char* _suffix, int maxQueueCapacity) {
     isOpen = true;
     level = _level;
     path = _path;
