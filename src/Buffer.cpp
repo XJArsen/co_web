@@ -39,8 +39,9 @@ void Buffer::RetrieveAll() {
     readPos = writePos = 0;
 }
 std::string Buffer::RetrieveAllToStr() {
-    bzero(&buf[0], buf.size());
-    readPos = writePos = 0;
+    std::string str(Peek(), ReadableBytes());
+    RetrieveAll();
+    return str;
 }
 
 const char* Buffer::BeginWriteConst() const {
