@@ -35,7 +35,7 @@ void Buffer::RetrieveUntil(const char* end) {
 }
 
 void Buffer::RetrieveAll() {
-    bzero(&buf, buf.size());
+    bzero(&buf[0], buf.size());
     readPos = writePos = 0;
 }
 std::string Buffer::RetrieveAllToStr() {
@@ -57,7 +57,7 @@ void Buffer::Append(const char* str, size_t len) {
     HasWritten(len);
 }
 void Buffer::Append(const std::string& str) {
-    Append(str.c_str(), sizeof str);
+    Append(str.c_str(), str.size());
 }
 void Buffer::Append(const void* data, size_t len) {
     Append(static_cast<const char*>(data), len);
@@ -66,7 +66,7 @@ void Buffer::Append(const Buffer& buff) {
     Append(buff.Peek(), buff.ReadableBytes());
 }
 
-ssize_t Buffer::ReadFd(int fd) {
+ssize_t Buffer::ReadFd(int fd, int* Errno) {
     char buff[65535];  // 栈区
     struct iovec iov[2];
     size_t writeable = WritableBytes();
@@ -76,8 +76,9 @@ ssize_t Buffer::ReadFd(int fd) {
     iov[1].iov_len = sizeof(buff);
 
     ssize_t len = readv(fd, iov, 2);
-    errif(len < 0, "readv error!\n");
-    if (static_cast<size_t>(len) <= writeable) {
+    if (len < 0) {
+        *Errno = errno;
+    } else if (static_cast<size_t>(len) <= writeable) {
         writePos += len;
     } else {
         writePos = buf.size();
@@ -85,10 +86,13 @@ ssize_t Buffer::ReadFd(int fd) {
     }
     return len;
 }
-ssize_t Buffer::WriteFd(int fd) {
+ssize_t Buffer::WriteFd(int fd, int* Errno) {
     ssize_t len = write(fd, Peek(), ReadableBytes());
-    errif(len < 0, "WriteFd error!\n");
-    Retrieve(len);
+    if (len < 0) {
+        *Errno = errno;
+    } else {
+        Retrieve(len);
+    }
     return len;
 }
 char* Buffer::BeginPtr() {
@@ -108,22 +112,22 @@ void Buffer::MakeSpace(size_t len) {
         errif(readable == ReadableBytes(), "MakeSpace error!\n");
     }
 }
-ssize_t Buffer::size() {
-    return buf.size();
-}
-const char* Buffer::c_str() {
-    return &*buf.begin();
-}
-void Buffer::clear() {
-    buf.clear();
-}
-void Buffer::getline() {
-    buf.clear();
-    std::string temp;
-    std::getline(std::cin, temp);
-    buf = std::vector<char>(temp.begin(), temp.end());
-}
-void Buffer::setBuf(const std::string& str) {
-    buf.clear();
-    Append(str);
-}
+// ssize_t Buffer::size() {
+//     return buf.size();
+// }
+// const char* Buffer::c_str() {
+//     return &*buf.begin();
+// }
+// void Buffer::clear() {
+//     buf.clear();
+// }
+// void Buffer::getline() {
+//     buf.clear();
+//     std::string temp;
+//     std::getline(std::cin, temp);
+//     buf = std::vector<char>(temp.begin(), temp.end());
+// }
+// void Buffer::setBuf(const std::string& str) {
+//     buf.clear();
+//     Append(str);
+// }

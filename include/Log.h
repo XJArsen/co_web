@@ -15,13 +15,13 @@
 #include "Buffer.h"
 class Log {
   public:
-    void init(int _level, const char* _path = "./log", const char* _suffix = ".log",
+    void init(int _level, const char* _path = "../log", const char* _suffix = ".log",
               int maxQueueCapacity = 1024);
-
+    Log(const Log&) = delete;
+    Log& operator=(const Log&) = delete;
     static Log* Instance();
-    static void FlushLogThread();  // 异步写日志公有方法，调用私有方法asyncWrite
-
-    void write(int, const char*, ...);  // 将输出内容按照标准格式整理
+    static void FlushLogThread();
+    void write(int _level, const char* _format, ...);
     void flush();
 
     int GetLevel();
@@ -32,7 +32,7 @@ class Log {
     Log();
     virtual ~Log();
     void AppendLogLevelTitle(int);
-    void AsyncWrite();  // 异步写日志方法
+    void AsyncWrite();
 
     static const int LOG_PATH_LEN = 256;  // 日志文件最长文件名
     static const int LOG_NAME_LEN = 256;  // 日志最长名字

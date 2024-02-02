@@ -47,14 +47,14 @@ class Buffer {
     void Append(const void* data, size_t len);
     void Append(const Buffer& buff);
 
-    ssize_t ReadFd(int fd);
-    ssize_t WriteFd(int fd);
+    ssize_t ReadFd(int fd, int*);
+    ssize_t WriteFd(int fd, int*);
 
-    ssize_t size();
-    const char* c_str();
-    void clear();
-    void getline();
-    void setBuf(const std::string&);
+    // ssize_t size();
+    // const char* c_str();
+    // void clear();
+    // void getline();
+    // void setBuf(const std::string&);
 };
 
 #endif

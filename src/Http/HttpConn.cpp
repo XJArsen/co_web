@@ -1,5 +1,8 @@
 #include "HttpConn.h"
 #include "Log.h"
+const char* HttpConn::srcDir;
+std::atomic<int> HttpConn::userCount;
+bool HttpConn::isET;
 HttpConn::HttpConn() : fd(-1), isClose(false) {
     bzero(&addr, sizeof addr);
 }
@@ -19,7 +22,7 @@ void HttpConn::init(int _fd, const sockaddr_in& _addr) {
 ssize_t HttpConn::read(int* saveErrno) {
     ssize_t len = -1;
     do {
-        len = readBuff.ReadFd(fd);
+        len = readBuff.ReadFd(fd, saveErrno);
         if (len <= 0) {
             break;
         }
@@ -31,6 +34,7 @@ ssize_t HttpConn::write(int* saveErrno) {
     do {
         len = writev(fd, iov, iovCnt);
         if (len <= 0) {
+            *saveErrno = errno;
             break;
         }
         if (iov[0].iov_len + iov[1].iov_len == 0) {

@@ -2,8 +2,8 @@
 // Author: XJArsen
 // Date: 2024-01-31
 
-#ifndef SRC_TIMER_H_
-#define SRC_TIMER_H_
+#ifndef INCLUDE_TIMER_H_
+#define INCLUDE_TIMER_H_
 #include <arpa/inet.h>
 #include <algorithm>
 #include <chrono>
@@ -11,6 +11,7 @@
 #include <functional>
 #include <queue>
 #include <unordered_map>
+
 typedef std::chrono::high_resolution_clock Clock;
 typedef std::chrono::milliseconds MS;
 typedef Clock::time_point TimeStamp;

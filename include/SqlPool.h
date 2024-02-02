@@ -38,19 +38,15 @@ class SqlRAII {
     SqlPool* pool;
 
   public:
-    SqlRAII(MYSQL**, SqlPool*);
-    ~SqlRAII();
-};
-
-SqlRAII::SqlRAII(MYSQL** _sql, SqlPool* _pool) : pool(_pool) {
-    *_sql = pool->GetConn();
-    sql = *_sql;
-}
-
-SqlRAII::~SqlRAII() {
-    if (sql) {
-        pool->FreeConn(sql);
+    SqlRAII(MYSQL** _sql, SqlPool* _pool) : pool(_pool) {
+        *_sql = pool->GetConn();
+        sql = *_sql;
     }
-}
+    ~SqlRAII() {
+        if (sql) {
+            pool->FreeConn(sql);
+        }
+    }
+};
 
 #endif

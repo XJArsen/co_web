@@ -57,13 +57,5 @@ class HttpRequest {
     static std::unordered_map<std::string, int> DEFAULT_HTML_TAG;
     static int ConverHex(char ch);  // 16进制转换为10进制
 };
-const std::unordered_set<std::string> HttpRequest::DEFAULT_HTML{
-    "/index", "/register", "/login", "/welcome", "/video", "/picture",
-};
-
-std::unordered_map<std::string, int> HttpRequest::DEFAULT_HTML_TAG{
-    {"/register.html", 0},
-    {"/login.html", 1},
-};
 
 #endif

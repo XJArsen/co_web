@@ -12,9 +12,7 @@
 #include "Buffer.h"
 #include "HttpRequest.h"
 #include "HttpResponse.h"
-class Buffer;
-class HttpRequest;
-class HttpResponse;
+
 class HttpConn {
   public:
     HttpConn();

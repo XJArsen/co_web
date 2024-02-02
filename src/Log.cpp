@@ -1,4 +1,6 @@
 #include "Log.h"
+#include <cassert>
+#include <iostream>
 Log::Log() {
     fp = nullptr;
     deq = nullptr;
@@ -26,44 +28,51 @@ Log* Log::Instance() {
     return &log;
 }
 
-void Log::init(int _level, const char* _path, const char* _suffix, int maxQueueCapacity) {
+void Log::init(int _level, const char* _path, const char* _suffix, int maxQueCapacity) {
     isOpen = true;
     level = _level;
     path = _path;
     suffix = _suffix;
-    if (maxQueueCapacity == 0) {  // 同步方式
-        isAsync = false;
-    } else {  // 异步方式
+    if (maxQueCapacity) {  // 异步方式
         isAsync = true;
-        if (!deq) {
+        if (!deq) {  // 为空则创建一个
             unique_ptr<BlockQueue<std::string>> newQue(new BlockQueue<std::string>);
-            deq = move(newQue);
+            // 因为unique_ptr不支持普通的拷贝或赋值操作,所以采用move
+            // 将动态申请的内存权给deque，newDeque被释放
+            deq = move(newQue);  // 左值变右值,掏空newDeque
+
             unique_ptr<thread> newThread(new thread(FlushLogThread));
             writeThread = move(newThread);
         }
+    } else {
+        isAsync = false;
     }
 
     lineCount = 0;
+
     time_t timer = time(nullptr);
-    struct tm* systime = localtime(&timer);
+    struct tm* sysTime = localtime(&timer);
+    struct tm t = *sysTime;
+    path = _path;
+    suffix = _suffix;
     char fileName[LOG_NAME_LEN] = {0};
-    snprintf(fileName, LOG_NAME_LEN - 1, "%s/%04d_%02d_%02d%s", path, systime->tm_year + 1900,
-             systime->tm_mon + 1, systime->tm_mday, suffix);
-    toDay = systime->tm_mday;
+    snprintf(fileName, LOG_NAME_LEN - 1, "%s/%04d_%02d_%02d%s", path, t.tm_year + 1900,
+             t.tm_mon + 1, t.tm_mday, suffix);
+    toDay = t.tm_mday;
 
     {
         lock_guard<mutex> locker(mtx);
         buf.RetrieveAll();
-        if (fp) {
+        if (fp) {  // 重新打开
             flush();
             fclose(fp);
         }
-        fp = fopen(fileName, "a");
+        fp = fopen(fileName, "a");  // 打开文件读取并附加写入
         if (fp == nullptr) {
-            mkdir(fileName, S_IRWXU);
-            fp = fopen(fileName, "a");
+            mkdir(path, 0777);
+            fp = fopen(fileName, "a");  // 生成目录文件（最大权限）
         }
-        // assert(fp != nullptr);
+        // assert(fp_ != nullptr);
     }
 }
 

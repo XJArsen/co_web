@@ -1,4 +1,5 @@
 #include "HttpRequest.h"
+#include <iostream>
 #include "Log.h"
 #include "SqlPool.h"
 HttpRequest::HttpRequest() {
@@ -13,13 +14,14 @@ void HttpRequest::Init() {
     post.clear();
 }
 bool HttpRequest::parse(Buffer& buf) {
-    const char CRLF[] = "\r\n";
+    const char END[] = "\r\n";
     if (buf.ReadableBytes() <= 0) {
         return false;
     }
     while (buf.ReadableBytes() && state != FINISH) {
-        const char* lineEnd = std::search(buf.Peek(), buf.BeginWriteConst(), CRLF, CRLF + 2);
+        const char* lineEnd = std::search(buf.Peek(), buf.BeginWriteConst(), END, END + 2);
         std::string line(buf.Peek(), lineEnd);
+        std::cout << line << "\n";
         switch (state) {
             case REQUEST_LINE:
                 if (!ParseRequestLine(line)) {
@@ -73,12 +75,14 @@ std::string HttpRequest::GetPost(const char* key) const {
 }
 
 bool HttpRequest::IsKeepAlive() const {
-    return header.count("Connection") && header.find("Connection")->second == "keep-alive" &&
-           version == "1.1";
+    if (header.count("Connection") == 1) {
+        return header.find("Connection")->second == "keep-alive" && version == "1.1";
+    }
+    return false;
 }
 
 bool HttpRequest::ParseRequestLine(const std::string& line) {
-    std::regex patten("^([^ ]*) ([^ ]*) HTTP/([^ ]*)$");
+    regex patten("^([^ ]*) ([^ ]*) HTTP/([^ ]*)$");
     std::smatch sub_match;
     if (regex_match(line, sub_match, patten)) {
         method = sub_match[1];
@@ -95,6 +99,7 @@ void HttpRequest::ParseHeader(const std::string& line) {
     smatch sub_match;
     if (regex_match(line, sub_match, patten)) {
         header[sub_match[1]] = sub_match[2];
+        std::cout << sub_match[1] << " " << sub_match[2] << "\n";
     } else {
         state = BODY;
     }
@@ -110,11 +115,8 @@ void HttpRequest::ParsePath() {
     if (path == "/") {
         path = "/index.html";
     } else {
-        for (auto item : DEFAULT_HTML) {
-            if (item == path) {
-                path += ".html";
-                break;
-            }
+        if (DEFAULT_HTML.find(path) != DEFAULT_HTML.end()) {
+            path += ".html";
         }
     }
 }
@@ -176,7 +178,7 @@ void HttpRequest::ParseFromUrlencoded() {
     }
 }
 
-bool UserVerify(const std::string& name, const std::string& pwd, bool isLogin) {
+bool HttpRequest::UserVerify(const std::string& name, const std::string& pwd, bool isLogin) {
     if (name == "" || pwd == "") return false;
     LOG_INFO("Verify name:%s  pwd:%s", name.c_str(), pwd.c_str());
     MYSQL* sql;
@@ -242,3 +244,12 @@ int HttpRequest::ConverHex(char ch) {
     LOG_DEBUG("number error");
     return -1;
 }
+
+const std::unordered_set<std::string> HttpRequest::DEFAULT_HTML{
+    "/index", "/register", "/login", "/welcome", "/video", "/picture",
+};
+
+std::unordered_map<std::string, int> HttpRequest::DEFAULT_HTML_TAG{
+    {"/register.html", 0},
+    {"/login.html", 1},
+};
