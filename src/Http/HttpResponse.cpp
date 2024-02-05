@@ -60,7 +60,8 @@ void HttpResponse::AddStateLine(Buffer& buf) {
         code = 400;
         status = CODE_STATUS.find(400)->second;
     }
-    buf.Append("HTTP/1.1" + std::to_string(code) + " " + status + "\r\n");  // 有问题，待解决
+    // buf.Append("HTTP/1.1" + std::to_string(code) + " " + status + "\r\n");  // 有问题，待解决
+    buf.Append("HTTP/1.1" + std::to_string(code) + status + "\r\n");  // 有问题，待解决
 }
 void HttpResponse::AddHeader(Buffer& buf) {
     buf.Append("Connection: ");
