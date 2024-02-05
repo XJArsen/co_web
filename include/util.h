@@ -4,6 +4,7 @@
 
 #ifndef INCLUDE_UTIL_H_
 #define INCLUDE_UTIL_H_
+#include "Log.h"
 
 void errif(bool, const char*);
 #endif

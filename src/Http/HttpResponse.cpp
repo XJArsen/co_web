@@ -10,6 +10,10 @@ HttpResponse::~HttpResponse() {
 
 void HttpResponse::Init(const std::string& _srcDir, std::string& _path, bool _isKeepAlive,
                         int _code) {
+    if (mmFile) {
+        UnmapFile();
+    }
+
     code = _code;
     isKeepAlive = _isKeepAlive;
     path = _path;
@@ -56,15 +60,15 @@ void HttpResponse::AddStateLine(Buffer& buf) {
         code = 400;
         status = CODE_STATUS.find(400)->second;
     }
-    buf.Append("HTTP/1.1" + std::to_string(code) + status + "\r\n");
+    buf.Append("HTTP/1.1" + std::to_string(code) + " " + status + "\r\n");  // 有问题，待解决
 }
 void HttpResponse::AddHeader(Buffer& buf) {
-    buf.Append("Connection : ");
+    buf.Append("Connection: ");
     if (isKeepAlive) {
-        buf.Append("Keep-alive\r\n");
-        buf.Append("Keep-alive: max = 6, timeout = 120 \r\n");
+        buf.Append("keep-alive\r\n");
+        buf.Append("keep-alive: max=6, timeout=120\r\n");
     } else {
-        buf.Append("Close");
+        buf.Append("close\r\n");
     }
     buf.Append("Content-type: " + GetFileType() + "\r\n");
 }
@@ -83,6 +87,7 @@ void HttpResponse::AddContent(Buffer& buf) {
     }
     mmFile = (char*)mmRet;
     close(srcfd);
+    buf.Append("Content-length: " + to_string(mmFileStat.st_size) + "\r\n\r\n");
 }
 std::string HttpResponse::GetFileType() {
     std::string::size_type idx = path.find_last_of('.');

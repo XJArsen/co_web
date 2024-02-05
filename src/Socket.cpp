@@ -32,14 +32,15 @@ void Socket::connect(InetAddress* _addr) {
 void Socket::listen() {
     errif(::listen(fd, SOMAXCONN) == -1, "socket listen error");
 }
-int Socket::accept(InetAddress* _addr) {
-    struct sockaddr_in addr;
-    socklen_t addr_len = sizeof(addr);
-    bzero(&addr, sizeof(addr));
-    int client_sockfd = ::accept(fd, (sockaddr*)&addr, &addr_len);
-    errif(client_sockfd == -1, "socket accept error");
-    _addr->setInetAddr(addr, addr_len);
-    return client_sockfd;
+void Socket::listen(int sockcnt) {
+    errif(::listen(fd, sockcnt) == -1, "socket listen error");
+}
+void Socket::accept(int& clnt_fd, sockaddr_in& _addr) const {
+    socklen_t addr_len = sizeof(_addr);
+    clnt_fd = ::accept(fd, (sockaddr*)&_addr, &addr_len);
+    if (clnt_fd == -1) {
+        LOG_ERROR("Failed to accept socket");
+    }
 }
 int Socket::getFd() {
     return fd;

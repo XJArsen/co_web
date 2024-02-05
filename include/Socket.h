@@ -4,12 +4,12 @@
 
 #ifndef INCLUDE_SOCKET_H_
 #define INCLUDE_SOCKET_H_
-class InetAddress;
+#include "InetAddress.h"
 class Socket {
-   private:
+  private:
     int fd;
 
-   public:
+  public:
     Socket();
     Socket(int);
     ~Socket();
@@ -17,7 +17,8 @@ class Socket {
     void bind(InetAddress*);
     void connect(InetAddress*);
     void listen();
-    int accept(InetAddress*);
+    void listen(int);
+    void accept(int&, sockaddr_in&) const;
     int getFd();
     void setnonblocking();
 };

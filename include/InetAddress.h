@@ -7,13 +7,14 @@
 #include <arpa/inet.h>
 
 class InetAddress {
-   private:
+  private:
     struct sockaddr_in addr;
     socklen_t addr_len;
 
-   public:
+  public:
     InetAddress();
     InetAddress(const char *ip, uint16_t port);
+    InetAddress(const uint32_t ip, uint16_t port);
     ~InetAddress();
     sockaddr_in getAddr();
     socklen_t getAddr_len();

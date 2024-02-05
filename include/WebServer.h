@@ -17,6 +17,7 @@
 #include "Epoll.h"
 #include "Epoller.h"
 #include "HttpConn.h"
+#include "Socket.h"
 #include "ThreadPool.h"
 #include "Timer.h"
 class WebServer {
@@ -53,7 +54,7 @@ class WebServer {
     bool openLinger;
     int timeoutMS; /* 毫秒MS */
     bool isClose;
-    int listenFd;
+    Socket* sock;
     char* srcDir;
 
     uint32_t listenEvent;  // 监听事件

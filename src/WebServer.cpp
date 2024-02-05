@@ -1,6 +1,7 @@
 #include "WebServer.h"
 #include <iostream>
 #include "Epoll.h"
+#include "InetAddress.h"
 #include "Log.h"
 #include "SqlPool.h"
 WebServer::WebServer(int _port, int _trigMode, int _timeoutMS, bool _OptLinger, int sqlPort,
@@ -24,7 +25,6 @@ WebServer::WebServer(int _port, int _trigMode, int _timeoutMS, bool _OptLinger, 
             LOG_INFO("Listen Mode: %s, OpenConn Mode: %s", (listenEvent & EPOLLET ? "ET" : "LT"),
                      (connEvent & EPOLLET ? "ET" : "LT"));
             LOG_INFO("LogSys level: %d", logLevel);
-            LOG_INFO("srcDir: %s", HttpConn::srcDir);
             LOG_INFO("SqlConnPool num: %d, ThreadPool num: %d", connPoolNum, threadNum);
         }
     }
@@ -32,9 +32,9 @@ WebServer::WebServer(int _port, int _trigMode, int _timeoutMS, bool _OptLinger, 
     srcDir = getcwd(nullptr, 256);
     assert(srcDir);
     strcat(srcDir, "/resources/");
-    // srcDir = "../resources/";
     HttpConn::userCount = 0;
     HttpConn::srcDir = srcDir;
+    LOG_INFO("srcDir: %s", HttpConn::srcDir);
 
     // 初始化操作
     SqlPool::Instance()->Init("localhost", sqlPort, sqlUser, sqlPwd, dbName,
@@ -47,7 +47,7 @@ WebServer::WebServer(int _port, int _trigMode, int _timeoutMS, bool _OptLinger, 
 }
 
 WebServer::~WebServer() {
-    close(listenFd);
+    close(sock->getFd());
     isClose = true;
     free(srcDir);
     SqlPool::Instance()->ClosePool();
@@ -91,7 +91,7 @@ void WebServer::Start() {
             /* 处理事件 */
             int fd = epoll->GetEventFd(i);
             uint32_t events = epoll->GetEvents(i);
-            if (fd == listenFd) {
+            if (fd == sock->getFd()) {
                 DealListen();
             } else if (events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) {
                 assert(users.count(fd) > 0);
@@ -139,9 +139,9 @@ void WebServer::AddClient(int fd, sockaddr_in addr) {
 // 处理监听套接字，主要逻辑是accept新的套接字，并加入timer和epoller中
 void WebServer::DealListen() {
     struct sockaddr_in addr;
-    socklen_t len = sizeof(addr);
     do {
-        int fd = accept(listenFd, (struct sockaddr*)&addr, &len);
+        int fd = -1;
+        sock->accept(fd, addr);
         if (fd <= 0) {
             return;
         } else if (HttpConn::userCount >= MAX_FD) {
@@ -209,7 +209,6 @@ void WebServer::OnWrite(HttpConn* client) {
     if (client->ToWriteBytes() == 0) {
         /* 传输完成 */
         if (client->IsKeepAlive()) {
-            std::cout << "1111\n";
             // OnProcess(client);
             epoll->ModFd(client->GetFd(), connEvent | EPOLLIN);  // 回归换成监测读事件
             return;
@@ -221,20 +220,16 @@ void WebServer::OnWrite(HttpConn* client) {
             return;
         }
     }
-    std::cout << "3333\n";
     CloseConn(client);
 }
 
 /* Create listenFd */
 bool WebServer::InitSocket() {
     int ret;
-    struct sockaddr_in addr;
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(port);
+    InetAddress* addr = new InetAddress(INADDR_ANY, port);
 
-    listenFd = socket(AF_INET, SOCK_STREAM, 0);
-    if (listenFd < 0) {
+    sock = new Socket();
+    if (sock->getFd() < 0) {
         LOG_ERROR("Create socket error!", port);
         return false;
     }
@@ -242,35 +237,31 @@ bool WebServer::InitSocket() {
     int optval = 1;
     /* 端口复用 */
     /* 只有最后一个套接字会正常接收数据。 */
-    ret = setsockopt(listenFd, SOL_SOCKET, SO_REUSEADDR, (const void*)&optval, sizeof(int));
+    ret = setsockopt(sock->getFd(), SOL_SOCKET, SO_REUSEADDR, (const void*)&optval, sizeof(int));
     if (ret == -1) {
         LOG_ERROR("set socket setsockopt error !");
-        close(listenFd);
         return false;
     }
 
     // 绑定
-    ret = bind(listenFd, (struct sockaddr*)&addr, sizeof(addr));
+    sock->bind(addr);
     if (ret < 0) {
         LOG_ERROR("Bind Port:%d error!", port);
-        close(listenFd);
         return false;
     }
 
     // 监听
-    ret = listen(listenFd, 6);
+    sock->listen(6);
     if (ret < 0) {
         LOG_ERROR("Listen port:%d error!", port);
-        close(listenFd);
         return false;
     }
-    ret = epoll->AddFd(listenFd, listenEvent | EPOLLIN);  // 将监听套接字加入epoller
+    ret = epoll->AddFd(sock->getFd(), listenEvent | EPOLLIN);  // 将监听套接字加入epoller
     if (ret == 0) {
         LOG_ERROR("Add listen error!");
-        close(listenFd);
         return false;
     }
-    SetFdNonblock(listenFd);
+    sock->setnonblocking();
     LOG_INFO("Server port:%d", port);
     return true;
 }

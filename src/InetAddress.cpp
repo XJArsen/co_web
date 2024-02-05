@@ -6,6 +6,12 @@ InetAddress::InetAddress() : addr_len(sizeof addr) {
 }
 InetAddress::~InetAddress() {
 }
+InetAddress::InetAddress(const uint32_t _ip, uint16_t _port) : addr_len(sizeof addr) {
+    bzero(&addr, sizeof addr);
+    addr.sin_addr.s_addr = htonl(_ip);
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(_port);
+}
 InetAddress::InetAddress(const char *_ip, uint16_t _port) : addr_len(sizeof addr) {
     bzero(&addr, sizeof addr);
     addr.sin_addr.s_addr = inet_addr(_ip);

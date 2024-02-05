@@ -44,6 +44,7 @@ bool HttpRequest::parse(Buffer& buf) {
         if (lineEnd == buf.BeginWrite()) {
             break;
         }
+        buf.RetrieveUntil(lineEnd + 2);
     }
     LOG_DEBUG("[%s] [%s] [%s]", method.c_str(), path.c_str(), version.c_str())
     return true;

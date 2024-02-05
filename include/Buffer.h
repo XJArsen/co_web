@@ -10,7 +10,6 @@
 #include <cstring>
 #include <string>
 #include <vector>
-#include "util.h"
 class Buffer {
   private:
     char* BeginPtr();  // buffer开头

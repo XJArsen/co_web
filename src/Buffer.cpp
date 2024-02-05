@@ -109,25 +109,5 @@ void Buffer::MakeSpace(size_t len) {
         std::copy(BeginPtr() + readPos, BeginPtr() + writePos, BeginPtr());
         readPos = 0;
         writePos = readable;
-        errif(readable == ReadableBytes(), "MakeSpace error!\n");
     }
 }
-// ssize_t Buffer::size() {
-//     return buf.size();
-// }
-// const char* Buffer::c_str() {
-//     return &*buf.begin();
-// }
-// void Buffer::clear() {
-//     buf.clear();
-// }
-// void Buffer::getline() {
-//     buf.clear();
-//     std::string temp;
-//     std::getline(std::cin, temp);
-//     buf = std::vector<char>(temp.begin(), temp.end());
-// }
-// void Buffer::setBuf(const std::string& str) {
-//     buf.clear();
-//     Append(str);
-// }
