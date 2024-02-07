@@ -16,9 +16,9 @@ class Buffer {
     const char* BeginPtr() const;
     void MakeSpace(size_t len);
 
-    std::vector<char> buf;
-    std::atomic<std::size_t> readPos;   // 读的下标
-    std::atomic<std::size_t> writePos;  // 写的下标
+    std::vector<char> buf_;
+    std::atomic<std::size_t> readPos_;   // 读的下标
+    std::atomic<std::size_t> writePos_;  // 写的下标
 
   public:
     Buffer(int initBuffSize = 1024);

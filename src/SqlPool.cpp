@@ -20,38 +20,38 @@ void SqlPool::Init(const char* host, int port, const char* user, const char* pwd
         if (!connect) {
             LOG_ERROR("MySql Connect error!");
         }
-        connnet_que.emplace(connect);
+        connnet_que_.emplace(connect);
     }
     MAX_CONN = connSize;
-    sem_init(&semId, 0, MAX_CONN);
+    sem_init(&semId_, 0, MAX_CONN);
 }
 MYSQL* SqlPool::GetConn() {
     MYSQL* connect = nullptr;
-    if (connnet_que.empty()) {
+    if (connnet_que_.empty()) {
         LOG_WARN("SqlConnPool busy!");
         return nullptr;
     }
-    sem_wait(&semId);
-    lock_guard<mutex> locker(mtx);
-    connect = connnet_que.front();
-    connnet_que.pop();
+    sem_wait(&semId_);
+    lock_guard<mutex> locker(mtx_);
+    connect = connnet_que_.front();
+    connnet_que_.pop();
     return connect;
 }
 void SqlPool::FreeConn(MYSQL* connect) {
-    lock_guard<mutex> locker(mtx);
-    connnet_que.push(connect);
-    sem_post(&semId);
+    lock_guard<mutex> locker(mtx_);
+    connnet_que_.push(connect);
+    sem_post(&semId_);
 }
 int SqlPool::GetFreeConnCount() {
-    lock_guard<mutex> locker(mtx);
-    return connnet_que.size();
+    lock_guard<mutex> locker(mtx_);
+    return connnet_que_.size();
 }
 
 void SqlPool::ClosePool() {
-    lock_guard<mutex> locker(mtx);
-    while (!connnet_que.empty()) {
-        MYSQL* connect = connnet_que.front();
-        connnet_que.pop();
+    lock_guard<mutex> locker(mtx_);
+    while (!connnet_que_.empty()) {
+        MYSQL* connect = connnet_que_.front();
+        connnet_que_.pop();
         mysql_close(connect);
     }
     mysql_library_end();

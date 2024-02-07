@@ -11,7 +11,7 @@
 #include <cstring>
 class Socket {
   private:
-    int fd;
+    int fd_;
 
   public:
     Socket();

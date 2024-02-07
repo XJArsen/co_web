@@ -14,7 +14,6 @@
 #include <unistd.h>
 #include <memory>
 #include <unordered_map>
-#include "Epoll.h"
 #include "Epoller.h"
 #include "HttpConn.h"
 #include "Socket.h"
@@ -22,7 +21,7 @@
 #include "Timer.h"
 class WebServer {
   public:
-    WebServer(int port, int trigMode, int timeoutMS, bool OptLinger, int sqlPort,
+    WebServer(int port, int trigMode, int timeoutMS_, bool OptLinger, int sqlPort,
               const char* sqlUser, const char* sqlPwd, const char* dbName, int connPoolNum,
               int threadNum, bool openLog, int logLevel, int logQueSize);
 
@@ -50,20 +49,20 @@ class WebServer {
 
     static int SetFdNonblock(int fd);
 
-    int port;
-    bool openLinger;
-    int timeoutMS; /* 毫秒MS */
-    bool isClose;
-    Socket* sock;
-    char* srcDir;
+    int port_;
+    bool openLinger_;
+    int timeoutMS_; /* 毫秒MS */
+    bool isClose_;
+    Socket* socket_;
+    char* srcDir_;
 
-    uint32_t listenEvent;  // 监听事件
-    uint32_t connEvent;    // 连接事件
+    uint32_t listenEvent_;  // 监听事件
+    uint32_t connEvent_;    // 连接事件
 
-    std::unique_ptr<Timer> timer;
-    std::unique_ptr<ThreadPool> threadpool;
-    std::unique_ptr<Epoller> epoll;
-    std::unordered_map<int, HttpConn> users;
+    std::unique_ptr<Timer> timer_;
+    std::unique_ptr<ThreadPool> threadpool_;
+    std::unique_ptr<Epoller> epoll_;
+    std::unordered_map<int, HttpConn> users_;
 };
 
 #endif

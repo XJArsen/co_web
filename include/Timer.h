@@ -16,14 +16,14 @@ typedef std::chrono::high_resolution_clock Clock;
 typedef std::chrono::milliseconds MS;
 typedef Clock::time_point TimeStamp;
 struct TimerNode {
-    int id;
-    TimeStamp expires;                    // 超时时间点
-    std::function<void()> cb;             // 回调function<void()>
+    int id_;
+    TimeStamp expires_;                   // 超时时间点
+    std::function<void()> cb_;            // 回调function<void()>
     bool operator<(const TimerNode& t) {  // 重载比较运算符
-        return expires < t.expires;
+        return expires_ < t.expires_;
     }
     bool operator>(const TimerNode& t) {  // 重载比较运算符
-        return expires > t.expires;
+        return expires_ > t.expires_;
     }
 };
 class Timer {

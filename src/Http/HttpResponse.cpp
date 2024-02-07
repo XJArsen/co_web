@@ -1,8 +1,8 @@
 #include "HttpResponse.h"
 #include "Log.h"
-HttpResponse::HttpResponse() : code(-1), mmFile(nullptr), isKeepAlive(false) {
-    path = srcDir = "";
-    mmFileStat = {};
+HttpResponse::HttpResponse() : code_(-1), mmFile_(nullptr), isKeepAlive_(false) {
+    path_ = srcDir_ = "";
+    mmFileStat_ = {};
 }
 HttpResponse::~HttpResponse() {
     UnmapFile();
@@ -10,24 +10,24 @@ HttpResponse::~HttpResponse() {
 
 void HttpResponse::Init(const std::string& _srcDir, std::string& _path, bool _isKeepAlive,
                         int _code) {
-    if (mmFile) {
+    if (mmFile_) {
         UnmapFile();
     }
 
-    code = _code;
-    isKeepAlive = _isKeepAlive;
-    path = _path;
-    srcDir = _srcDir;
-    mmFile = nullptr;
-    mmFileStat = {};
+    code_ = _code;
+    isKeepAlive_ = _isKeepAlive;
+    path_ = _path;
+    srcDir_ = _srcDir;
+    mmFile_ = nullptr;
+    mmFileStat_ = {};
 }
 void HttpResponse::MakeResponse(Buffer& buf) {
-    if (stat((srcDir + path).data(), &mmFileStat) < 0 || S_ISDIR(mmFileStat.st_mode)) {
-        code = 404;
-    } else if (!(mmFileStat.st_mode & S_IROTH)) {
-        code = 403;
-    } else if (code == -1) {
-        code = 200;
+    if (stat((srcDir_ + path_).data(), &mmFileStat_) < 0 || S_ISDIR(mmFileStat_.st_mode)) {
+        code_ = 404;
+    } else if (!(mmFileStat_.st_mode & S_IROTH)) {
+        code_ = 403;
+    } else if (code_ == -1) {
+        code_ = 200;
     }
     ErrorHtml();
     AddStateLine(buf);
@@ -35,37 +35,37 @@ void HttpResponse::MakeResponse(Buffer& buf) {
     AddContent(buf);
 }
 void HttpResponse::UnmapFile() {
-    if (mmFile) {
-        munmap(mmFile, mmFileStat.st_size);
-        mmFile = nullptr;
+    if (mmFile_) {
+        munmap(mmFile_, mmFileStat_.st_size);
+        mmFile_ = nullptr;
     }
 }
 char* HttpResponse::File() {
-    return mmFile;
+    return mmFile_;
 }
 size_t HttpResponse::FileLen() const {
-    return mmFileStat.st_size;
+    return mmFileStat_.st_size;
 }
 
 int HttpResponse::Code() const {
-    return code;
+    return code_;
 }
 
 void HttpResponse::AddStateLine(Buffer& buf) {
     std::string status;
-    if (CODE_STATUS.count(code)) {
-        status = CODE_STATUS.find(code)->second;
+    if (CODE_STATUS.count(code_)) {
+        status = CODE_STATUS.find(code_)->second;
 
     } else {
-        code = 400;
+        code_ = 400;
         status = CODE_STATUS.find(400)->second;
     }
-    // buf.Append("HTTP/1.1" + std::to_string(code) + " " + status + "\r\n");  // 有问题，待解决
-    buf.Append("HTTP/1.1" + std::to_string(code) + status + "\r\n");  // 有问题，待解决
+    // buf.Append("HTTP/1.1" + std::to_string(code_) + " " + status + "\r\n");  // 有问题，待解决
+    buf.Append("HTTP/1.1" + std::to_string(code_) + status + "\r\n");  // 有问题，待解决
 }
 void HttpResponse::AddHeader(Buffer& buf) {
     buf.Append("Connection: ");
-    if (isKeepAlive) {
+    if (isKeepAlive_) {
         buf.Append("keep-alive\r\n");
         buf.Append("keep-alive: max=6, timeout=120\r\n");
     } else {
@@ -74,28 +74,28 @@ void HttpResponse::AddHeader(Buffer& buf) {
     buf.Append("Content-type: " + GetFileType() + "\r\n");
 }
 void HttpResponse::AddContent(Buffer& buf) {
-    int srcfd = open((srcDir + path).data(), O_RDONLY);
+    int srcfd = open((srcDir_ + path_).data(), O_RDONLY);
     if (srcfd < 0) {
         ErrorContent(buf, "File not found");
         return;
     }
-    LOG_DEBUG("file path %s", (srcDir = path).data());
+    LOG_DEBUG("file path %s", (srcDir_ = path_).data());
 
-    int* mmRet = (int*)mmap(0, mmFileStat.st_size, PROT_READ, MAP_PRIVATE, srcfd, 0);
+    int* mmRet = (int*)mmap(0, mmFileStat_.st_size, PROT_READ, MAP_PRIVATE, srcfd, 0);
     if (*mmRet == -1) {
         ErrorContent(buf, "File not found");
         return;
     }
-    mmFile = (char*)mmRet;
+    mmFile_ = (char*)mmRet;
     close(srcfd);
-    buf.Append("Content-length: " + to_string(mmFileStat.st_size) + "\r\n\r\n");
+    buf.Append("Content-length: " + to_string(mmFileStat_.st_size) + "\r\n\r\n");
 }
 std::string HttpResponse::GetFileType() {
-    std::string::size_type idx = path.find_last_of('.');
+    std::string::size_type idx = path_.find_last_of('.');
     if (idx == std::string::npos) {
         return "text/plain";
     }
-    std::string suffiex = path.substr(idx);
+    std::string suffiex = path_.substr(idx);
     if (SUFFIX_TYPE.count(suffiex)) {
         return SUFFIX_TYPE.find(suffiex)->second;
     }
@@ -103,27 +103,27 @@ std::string HttpResponse::GetFileType() {
 }
 
 void HttpResponse::ErrorHtml() {
-    if (CODE_PATH.count(code)) {
-        path = CODE_PATH.find(code)->second;
-        stat((srcDir + path).data(), &mmFileStat);
+    if (CODE_PATH.count(code_)) {
+        path_ = CODE_PATH.find(code_)->second;
+        stat((srcDir_ + path_).data(), &mmFileStat_);
     }
 }
 void HttpResponse::ErrorContent(Buffer& buf, std::string message) {
-    std::string body;
+    std::string body_;
     std::string status;
-    body += "<html><title>Error</title>";
-    body += "<body bgcolor=\"ffffff\">";
-    if (CODE_STATUS.count(code) == 1) {
-        status = CODE_STATUS.find(code)->second;
+    body_ += "<html><title>Error</title>";
+    body_ += "<body_ bgcolor=\"ffffff\">";
+    if (CODE_STATUS.count(code_) == 1) {
+        status = CODE_STATUS.find(code_)->second;
     } else {
         status = "Bad Request";
     }
-    body += to_string(code) + " : " + status + "\n";
-    body += "<p>" + message + "</p>";
-    body += "<hr><em>TinyWebServer</em></body></html>";
+    body_ += to_string(code_) + " : " + status + "\n";
+    body_ += "<p>" + message + "</p>";
+    body_ += "<hr><em>TinyWebServer</em></body_></html>";
 
-    buf.Append("Content-length: " + to_string(body.size()) + "\r\n\r\n");
-    buf.Append(body);
+    buf.Append("Content-length: " + to_string(body_.size()) + "\r\n\r\n");
+    buf.Append(body_);
 }
 
 const std::unordered_map<std::string, std::string> HttpResponse::SUFFIX_TYPE = {

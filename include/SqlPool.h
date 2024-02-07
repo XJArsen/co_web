@@ -27,9 +27,9 @@ class SqlPool {
 
     int MAX_CONN;
 
-    std::queue<MYSQL*> connnet_que;
-    std::mutex mtx;
-    sem_t semId;
+    std::queue<MYSQL*> connnet_que_;
+    std::mutex mtx_;
+    sem_t semId_;
 };
 
 class SqlRAII {

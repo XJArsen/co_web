@@ -38,22 +38,22 @@ class Log {
     static const int LOG_NAME_LEN = 256;  // 日志最长名字
     static const int MAX_LINES = 50000;   // 日志文件内的最长日志条数
 
-    const char* path;    //路径名
-    const char* suffix;  //后缀名
+    const char* path_;    //路径名
+    const char* suffix_;  //后缀名
 
-    int lineCount;  //日志行数记录
-    int toDay;      //按当天日期区分文件
+    int lineCount_;  //日志行数记录
+    int toDay_;      //按当天日期区分文件
 
-    bool isOpen;
+    bool isOpen_;
 
-    Buffer buf;    // 输出的内容，缓冲区
-    int level;     // 日志等级
-    bool isAsync;  // 是否开启异步日志
+    Buffer buf_;    // 输出的内容，缓冲区
+    int level_;     // 日志等级
+    bool isAsync_;  // 是否开启异步日志
 
-    FILE* fp;                                      //打开log的文件指针
-    std::unique_ptr<BlockQueue<std::string>> deq;  //阻塞队列
-    std::unique_ptr<std::thread> writeThread;      //写线程的指针
-    std::mutex mtx;                                //同步日志必需的互斥量
+    FILE* fp_;                                      //打开log的文件指针
+    std::unique_ptr<BlockQueue<std::string>> deq_;  //阻塞队列
+    std::unique_ptr<std::thread> writeThread_;      //写线程的指针
+    std::mutex mtx_;                                //同步日志必需的互斥量
 };
 #define LOG_BASE(level, format, ...)                     \
     do {                                                 \

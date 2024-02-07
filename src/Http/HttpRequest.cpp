@@ -8,21 +8,21 @@ HttpRequest::HttpRequest() {
 HttpRequest::~HttpRequest() = default;
 
 void HttpRequest::Init() {
-    method = path = version = body = "";
-    state = REQUEST_LINE;
-    header.clear();
-    post.clear();
+    method_ = path_ = version_ = body_ = "";
+    state_ = REQUEST_LINE;
+    header_.clear();
+    post_.clear();
 }
 bool HttpRequest::parse(Buffer& buf) {
     const char END[] = "\r\n";
     if (buf.ReadableBytes() <= 0) {
         return false;
     }
-    while (buf.ReadableBytes() && state != FINISH) {
+    while (buf.ReadableBytes() && state_ != FINISH) {
         const char* lineEnd = std::search(buf.Peek(), buf.BeginWriteConst(), END, END + 2);
         std::string line(buf.Peek(), lineEnd);
         std::cout << line << "\n";
-        switch (state) {
+        switch (state_) {
             case REQUEST_LINE:
                 if (!ParseRequestLine(line)) {
                     return false;
@@ -32,7 +32,7 @@ bool HttpRequest::parse(Buffer& buf) {
             case HEADERS:
                 ParseHeader(line);
                 if (buf.ReadableBytes() <= 2) {
-                    state = FINISH;
+                    state_ = FINISH;
                 }
                 break;
             case BODY:
@@ -46,38 +46,38 @@ bool HttpRequest::parse(Buffer& buf) {
         }
         buf.RetrieveUntil(lineEnd + 2);
     }
-    LOG_DEBUG("[%s] [%s] [%s]", method.c_str(), path.c_str(), version.c_str())
+    LOG_DEBUG("[%s] [%s] [%s]", method_.c_str(), path_.c_str(), version_.c_str())
     return true;
 }
 
 std::string HttpRequest::Path() const {
-    return path;
+    return path_;
 }
 std::string& HttpRequest::Path() {
-    return path;
+    return path_;
 }
 std::string HttpRequest::Method() const {
-    return method;
+    return method_;
 }
 std::string HttpRequest::Version() const {
-    return version;
+    return version_;
 }
 std::string HttpRequest::GetPost(const std::string& key) const {
-    if (post.count(key) == 1) {
-        return post.find(key)->second;
+    if (post_.count(key) == 1) {
+        return post_.find(key)->second;
     }
     return "";
 }
 std::string HttpRequest::GetPost(const char* key) const {
-    if (post.count(key) == 1) {
-        return post.find(key)->second;
+    if (post_.count(key) == 1) {
+        return post_.find(key)->second;
     }
     return "";
 }
 
 bool HttpRequest::IsKeepAlive() const {
-    if (header.count("Connection") == 1) {
-        return header.find("Connection")->second == "keep-alive" && version == "1.1";
+    if (header_.count("Connection") == 1) {
+        return header_.find("Connection")->second == "keep-alive" && version_ == "1.1";
     }
     return false;
 }
@@ -86,10 +86,10 @@ bool HttpRequest::ParseRequestLine(const std::string& line) {
     regex patten("^([^ ]*) ([^ ]*) HTTP/([^ ]*)$");
     std::smatch sub_match;
     if (regex_match(line, sub_match, patten)) {
-        method = sub_match[1];
-        path = sub_match[2];
-        version = sub_match[3];
-        state = HEADERS;
+        method_ = sub_match[1];
+        path_ = sub_match[2];
+        version_ = sub_match[3];
+        state_ = HEADERS;
         return true;
     }
     LOG_ERROR("RequestLine Error");
@@ -99,81 +99,81 @@ void HttpRequest::ParseHeader(const std::string& line) {
     regex patten("^([^:]*): ?(.*)$");
     smatch sub_match;
     if (regex_match(line, sub_match, patten)) {
-        header[sub_match[1]] = sub_match[2];
+        header_[sub_match[1]] = sub_match[2];
         std::cout << sub_match[1] << " " << sub_match[2] << "\n";
     } else {
-        state = BODY;
+        state_ = BODY;
     }
 }
 void HttpRequest::ParseBody(const std::string& line) {
-    body = line;
+    body_ = line;
     ParsePost();
-    state = FINISH;
+    state_ = FINISH;
     LOG_DEBUG("BODY;%s, len:%d", line.c_str(), line.size());
 }
 
 void HttpRequest::ParsePath() {
-    if (path == "/") {
-        path = "/index.html";
+    if (path_ == "/") {
+        path_ = "/index.html";
     } else {
-        if (DEFAULT_HTML.find(path) != DEFAULT_HTML.end()) {
-            path += ".html";
+        if (DEFAULT_HTML.find(path_) != DEFAULT_HTML.end()) {
+            path_ += ".html";
         }
     }
 }
 void HttpRequest::ParsePost() {
-    if (method != "POST" || header["Content-Type"] != "application/x-www-form-urlencoded") return;
+    if (method_ != "POST" || header_["Content-Type"] != "application/x-www-form-urlencoded") return;
     ParseFromUrlencoded();
-    if (!DEFAULT_HTML_TAG.count(path)) {
+    if (!DEFAULT_HTML_TAG.count(path_)) {
         return;
     }
 
-    int tag = DEFAULT_HTML_TAG[path];
+    int tag = DEFAULT_HTML_TAG[path_];
     LOG_DEBUG("Tag:%d", tag);
     if (tag == 0 || tag == 1) {
         bool isLogin = (tag == 1);
-        if (UserVerify(post["username"], post["password"], isLogin)) {
-            path = "/welcome.html";
+        if (UserVerify(post_["username"], post_["password"], isLogin)) {
+            path_ = "/welcome.html";
         } else {
-            path = "/error.html";
+            path_ = "/error.html";
         }
     }
 }
 void HttpRequest::ParseFromUrlencoded() {
-    if (body == "") return;
+    if (body_ == "") return;
 
     string key, val;
 
-    int num = 0, len = body.size();
+    int num = 0, len = body_.size();
     for (int i = 0, j = 0; i < len; i++) {
-        char ch = body[i];
+        char ch = body_[i];
         switch (ch) {
             case '=':
-                key = body.substr(j, i - j);
+                key = body_.substr(j, i - j);
                 j = i + 1;
                 break;
             case '+':
-                body[i] = ' ';
+                body_[i] = ' ';
                 break;
             case '%':
-                num = ConverHex(body[i + 1]) * 16 + ConverHex(body[i + 2]);
-                body[i + 2] = num % 10 + '0';
-                body[i + 1] = num / 10 + '0';
+                num = ConverHex(body_[i + 1]) * 16 + ConverHex(body_[i + 2]);
+                body_[i + 2] = num % 10 + '0';
+                body_[i + 1] = num / 10 + '0';
                 i += 2;
                 break;
             case '&':
-                val = body.substr(j, i - j);
+                val = body_.substr(j, i - j);
                 j = i + 1;
-                post[key] = val;
+                post_[key] = val;
                 LOG_DEBUG("%s = %s", key.c_str(), val.c_str());
                 break;
             default:
                 break;
         }
         if (i == len - 1) {
-            if (!post.count(key) && j < i) {
-                val = body.substr(j, i - j);
-                post[key] = val;
+            if (!post_.count(key) && j < i) {
+                val = body_.substr(j, i - j);
+                post_[key] = val;
             }
         }
     }

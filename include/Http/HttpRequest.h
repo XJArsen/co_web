@@ -48,10 +48,10 @@ class HttpRequest {
     static bool UserVerify(const std::string& name, const std::string& pwd,
                            bool isLogin);  // 用户验证
 
-    PARSE_STATE state;
-    std::string method, path, version, body;
-    std::unordered_map<std::string, std::string> header;
-    std::unordered_map<std::string, std::string> post;
+    PARSE_STATE state_;
+    std::string method_, path_, version_, body_;
+    std::unordered_map<std::string, std::string> header_;
+    std::unordered_map<std::string, std::string> post_;
 
     static const std::unordered_set<std::string> DEFAULT_HTML;
     static std::unordered_map<std::string, int> DEFAULT_HTML_TAG;

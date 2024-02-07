@@ -34,23 +34,23 @@ class HttpConn {
     bool IsKeepAlive() const;
 
     static bool isET;
-    static const char* srcDir;
-    static std::atomic<int> userCount;  // 原子，支持锁
+    static const char* srcDir_;
+    static std::atomic<int> userCount_;  // 原子，支持锁
 
   private:
     int fd;
-    struct sockaddr_in addr;
+    struct sockaddr_in addr_;
 
-    bool isClose;
+    bool isClose_;
 
-    int iovCnt;
+    int iovCnt_;
     struct iovec iov[2];
 
-    Buffer readBuff;   // 读缓冲区
-    Buffer writeBuff;  // 写缓冲区
+    Buffer readBuff_;   // 读缓冲区
+    Buffer writeBuff_;  // 写缓冲区
 
-    HttpRequest request;
-    HttpResponse response;
+    HttpRequest request_;
+    HttpResponse response_;
 };
 
 #endif

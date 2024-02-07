@@ -35,14 +35,14 @@ class HttpResponse {
     void ErrorHtml();
     std::string GetFileType();
 
-    int code;
-    bool isKeepAlive;
+    int code_;
+    bool isKeepAlive_;
 
-    std::string path;
-    std::string srcDir;
+    std::string path_;
+    std::string srcDir_;
 
-    char* mmFile;
-    struct stat mmFileStat;
+    char* mmFile_;
+    struct stat mmFileStat_;
 
     static const std::unordered_map<std::string, std::string> SUFFIX_TYPE;  // 后缀类型集
     static const std::unordered_map<int, std::string> CODE_STATUS;          // 编码状态集
