@@ -21,7 +21,6 @@ bool HttpRequest::parse(Buffer& buf) {
     while (buf.ReadableBytes() && state_ != FINISH) {
         const char* lineEnd = std::search(buf.Peek(), buf.BeginWriteConst(), END, END + 2);
         std::string line(buf.Peek(), lineEnd);
-        std::cout << line << "\n";
         switch (state_) {
             case REQUEST_LINE:
                 if (!ParseRequestLine(line)) {
@@ -100,7 +99,6 @@ void HttpRequest::ParseHeader(const std::string& line) {
     smatch sub_match;
     if (regex_match(line, sub_match, patten)) {
         header_[sub_match[1]] = sub_match[2];
-        std::cout << sub_match[1] << " " << sub_match[2] << "\n";
     } else {
         state_ = BODY;
     }
