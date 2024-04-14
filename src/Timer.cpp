@@ -6,8 +6,7 @@ Timer::Timer(/* args */) {
 Timer::~Timer() {
     clear();
 }
-void Timer::del(size_t i) {
-}
+
 void Timer::shiftup(size_t i) {
     size_t p = (i - 1) / 2;
     while (p >= 0) {
@@ -41,7 +40,19 @@ void Timer::SwapNode(size_t i, size_t j) {
     ref[heap[i].id_] = i;
     ref[heap[j].id_] = j;
 }
-
+void Timer::del(size_t index) {
+    size_t i = index;
+    size_t n = heap.size() - 1;
+    if (i < n) {
+        SwapNode(i, n);
+        if (!shiftdown(i, n)) {
+            shiftup(i);
+        }
+    }
+    /* 队尾元素删除 */
+    ref.erase(heap.back().id_);
+    heap.pop_back();
+}
 void Timer::adjust(int id_, int newExpires) {
     heap[ref[id_]].expires_ = Clock::now() + MS(newExpires);
     shiftdown(ref[id_], heap.size());
