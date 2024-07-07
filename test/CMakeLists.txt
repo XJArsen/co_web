@@ -1,3 +1,5 @@
+# Enable C++23
+set(CMAKE_CXX_STANDARD 23)
 # add_executable(server ./server.cpp)
 # add_executable(client ./client.cpp)
 # add_executable(ThreadPoolTest ./ThreadPoolTest.cpp)
