@@ -1,0 +1,3 @@
+[submodule "3rd/co_web"]
+	path = 3rd/co_web
+	url = git@github.com:XJArsen/co_web.git
