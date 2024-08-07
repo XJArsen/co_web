@@ -17,6 +17,21 @@
 * 替换MySQL, 计划使用PostgreSQL提高性能
 * 支持websocket
 
+## 压测
+cpu 2核 内存 8G
+```shell
+wrk -t2 -c800 -d20s http://127.0.0.1:8080/
+Running 20s test @ http://127.0.0.1:8080/
+  2 threads and 800 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    69.35ms   18.19ms 327.38ms   75.50%
+    Req/Sec     5.70k     1.46k   13.89k    82.74%
+  225852 requests in 20.06s, 41.35MB read
+Requests/sec:  11256.87
+Transfer/sec:      2.06MB
+
+```
+
 ## Reference
 
 [@yunwei37](https://github.com/yunwei37/co-uring-WebServer/tree/master)
