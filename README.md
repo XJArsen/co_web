@@ -32,6 +32,18 @@ Transfer/sec:      2.06MB
 
 ```
 
+性能与nginx测试持平
+```
+ubuntu@VM-20-9-ubuntu:~$ wrk -t2 -c800 -d20s http://127.0.0.1:8080/
+Running 20s test @ http://127.0.0.1:8080/
+  2 threads and 800 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    73.50ms   62.75ms   1.89s    98.62%
+    Req/Sec     5.67k     1.37k   12.58k    78.28%
+  224876 requests in 20.05s, 41.18MB read
+Requests/sec:  11216.73
+Transfer/sec:      2.05MB
+```
 ## Reference
 
 [@yunwei37](https://github.com/yunwei37/co-uring-WebServer/tree/master)
